@@ -3,8 +3,8 @@ import path from "path";
 import babel from "rollup-plugin-babel";
 import typescript from "rollup-plugin-typescript";
 import { terser } from "rollup-plugin-terser";
+import resolve from "@rollup/plugin-node-resolve";
 
-const isModern = process.env.BROWSER_TYPE === "modern";
 const isProduction = process.env.NODE_ENV === "production";
 
 // Reference:
@@ -25,8 +25,20 @@ const globals = {
   "react-dom": "ReactDOM"
 };
 
+const OUTPUT_DATA = [
+  {
+    file: pkg.main,
+    format: "umd"
+  },
+  {
+    file: pkg.module,
+    format: "es"
+  }
+];
+
 let plugins = [
   typescript(),
+  resolve(),
   babel({
     configFile: path.resolve(__dirname, "babel.config.js"),
     exclude: "node_modules/*"
@@ -45,13 +57,14 @@ if (isProduction) {
   ];
 }
 
-export default {
+export default OUTPUT_DATA.map(({ file, format }) => ({
   input: "./src/index.tsx",
   output: {
-    file: `./dist/typeit-react.${isModern ? "modern." : ""}min.js`,
-    format: "umd",
+    file,
+    format,
     name: "TypeIt",
     globals
   },
-  plugins
-};
+  plugins,
+  external: [...Object.keys(pkg.peerDependencies || {})]
+}));
