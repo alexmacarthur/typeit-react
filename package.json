@@ -1,12 +1,41 @@
 {
   "name": "typeit-react",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/typeit-react.modern.min.js",
   "scripts": {
+    "watch": "NODE_ENV=development BROWSER_TYPE=modern rollup -c -w && NODE_ENV=development BROWSER_TYPE=default rollup -c -w",
+    "build": "NODE_ENV=production BROWSER_TYPE=modern rollup -c && NODE_ENV=production BROWSER_TYPE=default rollup -c",
+    "precommit": "pretty-quick --staged",
+    "prettier": "prettier --write \"**/*.{md,js}\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/react": "^16.9.19",
+    "typeit": "^6.1.2"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "create-react-app": "^3.3.1",
+    "husky": "^4.2.1",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
+    "rollup": "^1.31.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.5"
+  }
 }
