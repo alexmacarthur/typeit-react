@@ -9,6 +9,10 @@ Use this component in an open source or personal project for free. For commercia
 - Single Commercial License - [Purchase Here](https://typeitjs.com/checkout/limited)
 - Extended Commercial License - [Purchase Here](https://typeitjs.com/checkout/unlimited)
 
+## Installation
+
+`npm install typeit-react`
+
 ## Usage
 
 ### The Simplest Example
