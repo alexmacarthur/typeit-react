@@ -1,5 +1,6 @@
 declare namespace JSX {
     interface IntrinsicElements {
-        DynamicElement: any
+        DynamicElement: any, 
+        ref: HTMLElement | null
     }
 }

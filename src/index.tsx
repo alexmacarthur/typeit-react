@@ -1,37 +1,76 @@
 import * as React from 'react';
 import { default as TypeItCore } from 'typeit';
-const { useRef, useEffect } = React;
+const { useRef, useEffect, useState } = React;
+
+export interface TypeItOptions {
+    strings?: Array<string> | string
+}
 
 export interface TypeItProps {
     element?: string, 
-    options?: object,
-    children?: React.ReactNode
-}
+    options?: TypeItOptions,
+    children?: React.ReactNode, 
+    getBeforeInit?: any, 
+    getAfterInit?: any
+} 
 
 const defaultProps: TypeItProps = {
     element: 'span',
-    options: {}
+    options: {}, 
+    getBeforeInit: (instance: object) => instance, 
+    getAfterInit: (instance: object) => instance
 }
 
 const TypeIt: React.FunctionComponent = (props: TypeItProps) => {
-    const ref = useRef<HTMLElement>(null);
-    const {options, element, children, ...remainingProps} = props;
+    const [shouldRenderChildren, setShouldRenderChildren] = useState<boolean>(true);
+    const ref = useRef<HTMLElement|null>(null);
+    const {options, element, children, getBeforeInit, getAfterInit, ...remainingProps} = props;
     const DynamicElement = element;
 
+    /**
+     * After the component mounts (and any children are rendered), 
+     * we can safely set the strings of the instance using the rendered HTML
+     * from those optionally-defined children. Otherwise, we'll just use the strings
+     * defined via the options prop.
+     */
     useEffect(() => {
-        const instance = (new TypeItCore(ref.current, {
-            ...options
-        })).go();
-
-        return () => {
-            instance.destroy();
+        if(children) {
+            options.strings = ref.current.innerHTML;
         }
+
+        setShouldRenderChildren(false);
     }, []);
 
+    /**
+     * Once options (and strings) have been defined, we can hide any children we might 
+     * have rendered to make room for the TypeIt animation. On cleanup, destroy
+     * that instance. 
+     */
+    useEffect(() => {
+        if(shouldRenderChildren) {
+            return;
+        }
+
+        let i = (new TypeItCore(ref.current, {
+            ...options
+        }));
+
+        i = getBeforeInit(i);
+        i.go();
+        i = getAfterInit(i);
+
+        return () => {
+            // @ts-ignore
+            i.destroy();
+        }
+    }, [shouldRenderChildren]);
+
     return (
-        <DynamicElement ref={ref} {...remainingProps}>
-            {children}
-        </DynamicElement>
+        <div style={{ opacity: shouldRenderChildren ? 0 : 1}}>
+            <DynamicElement ref={ref} {...remainingProps}>
+                {shouldRenderChildren && children}
+            </DynamicElement>
+        </div>
     )
 }
 
