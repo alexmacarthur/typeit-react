@@ -25,9 +25,7 @@ import TypeIt from "typeit-react";
 export default () => {
   return (
     <div className="App">
-      <TypeIt>
-        This will be typed in a `span` element!
-      </TypeIt>
+      <TypeIt>This will be typed in a `span` element!</TypeIt>
     </div>
   );
 };
@@ -41,11 +39,9 @@ The component will allow its children to fully render, and then type whatever HT
 import TypeIt from "typeit-react";
 
 // This could be any component that generates HTML.
-const SuperStrong = ({children}) => {
-  return (
-    <strong style={{fontSize: "80px"}}>{children}</strong>
-  )
-}
+const SuperStrong = ({ children }) => {
+  return <strong style={{ fontSize: "80px" }}>{children}</strong>;
+};
 
 export default () => {
   return (
@@ -98,13 +94,13 @@ export default () => {
 
 ### Fine-Tuning the Instance w/ Companion Methods
 
-TypeIt comes with a set of [special methods](https://typeitjs.com/docs#instance-methods) that let you fine-tune an animation down to the smallest detail. To leverage them here, pass a function as the `onBeforeInit` prop, which will give you access to the instance you can modify with these methods, and then return back to the component before the animation is initialized. 
+TypeIt comes with a set of [special methods](https://typeitjs.com/docs#instance-methods) that let you fine-tune an animation down to the smallest detail. To leverage them here, pass a function as the `onBeforeInit` prop, which will give you access to the instance you can modify with these methods, and then return back to the component before the animation is initialized.
 
 ```javascript
 import TypeIt from "typeit-react";
 
-<TypeIt  
-  getBeforeInit={(instance) => {
+<TypeIt
+  getBeforeInit={instance => {
     instance
       .type("Hi, I'm Alxe")
       .pause(750)
@@ -115,7 +111,7 @@ import TypeIt from "typeit-react";
     // Remember to return it!
     return instance;
   }}
-/>
+/>;
 ```
 
 ### Accessing the Instance After Initalization
@@ -127,26 +123,24 @@ export default () => {
   const [buttonText, setButtonText] = useState("Freeze");
   const [instance, setInstance] = useState(null);
 
-  const toggleFreeze = () => {  
-    if(instance.is('frozen')) {
+  const toggleFreeze = () => {
+    if (instance.is("frozen")) {
       instance.unfreeze();
-      setButtonText('Freeze');
+      setButtonText("Freeze");
       return;
-    }    
+    }
 
     instance.freeze();
-    setButtonText('Unfreeze');
-  }
+    setButtonText("Unfreeze");
+  };
 
   return (
     <div className="App">
-      <button onClick={toggleFreeze}>
-        {buttonText}
-      </button>
+      <button onClick={toggleFreeze}>{buttonText}</button>
 
-      <TypeIt  
+      <TypeIt
         options={{ loop: true }}
-        getAfterInit={(instance) => {  
+        getAfterInit={instance => {
           setInstance(instance);
           return instance;
         }}
@@ -155,7 +149,7 @@ export default () => {
       </TypeIt>
     </div>
   );
-}
+};
 ```
 
 ## Need Help?

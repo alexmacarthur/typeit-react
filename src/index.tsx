@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { default as TypeItCore } from 'typeit';
-const { useRef, useEffect, useState } = React;
+const { useRef, useEffect, useState, useMemo } = React;
+import isVoidElement from "./helpers/isVoidElement";
 
 export interface TypeItOptions {
     strings?: Array<string> | string
@@ -26,6 +27,9 @@ const TypeIt: React.FunctionComponent = (props: TypeItProps) => {
     const ref = useRef<HTMLElement|null>(null);
     const {options, element, children, getBeforeInit, getAfterInit, ...remainingProps} = props;
     const DynamicElement = element;
+    const elementIsVoid = useMemo(() => {
+        return isVoidElement(DynamicElement);
+    }, [DynamicElement]);
 
     /**
      * After the component mounts (and any children are rendered), 
@@ -67,9 +71,15 @@ const TypeIt: React.FunctionComponent = (props: TypeItProps) => {
 
     return (
         <div style={{ opacity: shouldRenderChildren ? 0 : 1}}>
-            <DynamicElement ref={ref} {...remainingProps}>
-                {shouldRenderChildren && children}
-            </DynamicElement>
+            {elementIsVoid 
+                ? <DynamicElement ref={ref} {...remainingProps} />
+                : 
+                    (
+                        <DynamicElement ref={ref} {...remainingProps}>
+                            {shouldRenderChildren && children}
+                        </DynamicElement>
+                    )
+            }
         </div>
     )
 }
