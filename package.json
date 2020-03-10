@@ -37,7 +37,7 @@
   "license": "GPL-2.0",
   "dependencies": {
     "@types/react": "^16.9.19",
-    "typeit": "^7.0.0-rc2"
+    "typeit": "^7.0.0-rc3"
   },
   "peerDependencies": {
     "react": "^16.12.0",
