@@ -4,7 +4,7 @@ The official React component for [TypeIt](https://github.com/alexmacarthur/typei
 
 ## License Options
 
-Use this component in an open source or personal project for free. For commercial projects, the following licenses are available. A single license will cover use of this component, as well as TypeItJS itself.
+Using TypeIt for an open source or personal project is completely free is licensed under [GPLv3](https://www.gnu.org/licenses/quick-guide-gplv3.html). To use it in a commercial project, however, a paid license is required.
 
 - Single Commercial License - [Purchase Here](https://typeitjs.com/checkout/limited)
 - Extended Commercial License - [Purchase Here](https://typeitjs.com/checkout/unlimited)
@@ -68,7 +68,7 @@ export default () => {
         options={{
           strings: ["This will be typed!"],
           speed: 10,
-          waitUntilVisible: true
+          waitUntilVisible: true,
         }}
       />
     </div>
@@ -100,13 +100,8 @@ TypeIt comes with a set of [special methods](https://typeitjs.com/docs#instance-
 import TypeIt from "typeit-react";
 
 <TypeIt
-  getBeforeInit={instance => {
-    instance
-      .type("Hi, I'm Alxe")
-      .pause(750)
-      .delete(2)
-      .pause(500)
-      .type("ex!");
+  getBeforeInit={(instance) => {
+    instance.type("Hi, I'm Alxe").pause(750).delete(2).pause(500).type("ex!");
 
     // Remember to return it!
     return instance;
@@ -140,7 +135,7 @@ export default () => {
 
       <TypeIt
         options={{ loop: true }}
-        getAfterInit={instance => {
+        getAfterInit={(instance) => {
           setInstance(instance);
           return instance;
         }}
@@ -155,7 +150,3 @@ export default () => {
 ## Need Help?
 
 If you're working with a custom implementation of TypeIt and would like some help, I'm available for hire. [Get in touch!](https://macarthur.me/contact)
-
-## License
-
-[GPL-2.0](https://github.com/alexmacarthur/typeit/blob/master/LICENSE) © Alex MacArthur
