@@ -6,34 +6,22 @@ import { terser } from "rollup-plugin-terser";
 import resolve from "@rollup/plugin-node-resolve";
 
 const isProduction = process.env.NODE_ENV === "production";
-
-// Reference:
-// https://github.com/jaebradley/example-rollup-react-component-npm-package/blob/master/rollup.config.js
-
-const banner = `/**
-  *
-  * TypeIt - React
-  * Author: ${pkg.author}
-  * Version: v${pkg.version}
-  * License: ${pkg.license}
-  * URL: ${pkg.homepage}
-  *
-  */`;
+const banner = `/** TypeIt by ${pkg.author} - ${pkg.homepage}*/`;
 
 const globals = {
   react: "React",
-  "react-dom": "ReactDOM"
+  "react-dom": "ReactDOM",
 };
 
 const OUTPUT_DATA = [
   {
     file: pkg.main,
-    format: "umd"
+    format: "umd",
   },
   {
     file: pkg.module,
-    format: "es"
-  }
+    format: "es",
+  },
 ];
 
 let plugins = [
@@ -41,19 +29,19 @@ let plugins = [
   resolve(),
   babel({
     configFile: path.resolve(__dirname, "babel.config.js"),
-    exclude: "node_modules/*"
-  })
+    exclude: "node_modules/*",
+  }),
 ];
 
 if (isProduction) {
   plugins = [
     ...plugins,
     terser({
-      include: [/^.+\.min\.js$/, "*esm*"],
-      output: {
-        preamble: banner
+      format: {
+        preamble: banner,
+        comments: false
       }
-    })
+    }),
   ];
 }
 
@@ -63,8 +51,8 @@ export default OUTPUT_DATA.map(({ file, format }) => ({
     file,
     format,
     name: "TypeIt",
-    globals
+    globals,
   },
   plugins,
-  external: [...Object.keys(pkg.peerDependencies || {})]
+  external: [...Object.keys(pkg.peerDependencies || {})],
 }));
