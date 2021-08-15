@@ -8,25 +8,25 @@ export interface TypeItOptions {
 }
 
 export interface TypeItProps {
-    element?: string, 
+    as?: keyof JSX.IntrinsicElements,
     options?: TypeItOptions,
     children?: React.ReactNode, 
-    getBeforeInit?: any, 
-    getAfterInit?: any
+    getBeforeInit?: (instance: any) => Function,
+    getAfterInit?: (instance: any) => Function
 } 
 
 const defaultProps: TypeItProps = {
-    element: 'span',
+    as: 'span',
     options: {}, 
-    getBeforeInit: (instance: object) => instance, 
-    getAfterInit: (instance: object) => instance
+    getBeforeInit: (instance) => instance,
+    getAfterInit: (instance) => instance
 }
 
-const TypeIt: React.FunctionComponent = (props: TypeItProps) => {
+const TypeIt: React.FunctionComponent<TypeItProps> = (props: TypeItProps) => {
     const [shouldRenderChildren, setShouldRenderChildren] = useState<boolean>(true);
-    const ref = useRef<HTMLElement|null>(null);
-    const {options, element, children, getBeforeInit, getAfterInit, ...remainingProps} = props;
-    const DynamicElement = element;
+    const ref = useRef(null);
+    const {options, as, children, getBeforeInit, getAfterInit, ...remainingProps} = props;
+    const DynamicElement = as;
     const elementIsVoid = useMemo(() => {
         return isVoidElement(DynamicElement);
     }, [DynamicElement]);
@@ -72,9 +72,11 @@ const TypeIt: React.FunctionComponent = (props: TypeItProps) => {
     return (
         <div style={{ opacity: shouldRenderChildren ? 0 : 1}}>
             {elementIsVoid 
+                // @ts-ignore
                 ? <DynamicElement ref={ref} {...remainingProps} />
                 : 
                     (
+                        // @ts-ignore
                         <DynamicElement ref={ref} {...remainingProps}>
                             {shouldRenderChildren && children}
                         </DynamicElement>
