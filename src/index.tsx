@@ -4,84 +4,86 @@ const { useRef, useEffect, useState, useMemo } = React;
 import isVoidElement from "./helpers/isVoidElement";
 
 export interface TypeItOptions {
-    strings?: Array<string> | string
+  strings?: Array<string> | string
 }
 
 export interface TypeItProps {
-    element?: string, 
-    options?: TypeItOptions,
-    children?: React.ReactNode, 
-    getBeforeInit?: any, 
-    getAfterInit?: any
-} 
-
-const defaultProps: TypeItProps = {
-    element: 'span',
-    options: {}, 
-    getBeforeInit: (instance: object) => instance, 
-    getAfterInit: (instance: object) => instance
+  as?: keyof JSX.IntrinsicElements,
+  options?: TypeItOptions,
+  children?: React.ReactNode,
+  getBeforeInit?: (instance: any) => Function,
+  getAfterInit?: (instance: any) => Function
 }
 
-const TypeIt: React.FunctionComponent = (props: TypeItProps) => {
-    const [shouldRenderChildren, setShouldRenderChildren] = useState<boolean>(true);
-    const ref = useRef<HTMLElement|null>(null);
-    const {options, element, children, getBeforeInit, getAfterInit, ...remainingProps} = props;
-    const DynamicElement = element;
-    const elementIsVoid = useMemo(() => {
-        return isVoidElement(DynamicElement);
-    }, [DynamicElement]);
+const defaultProps: TypeItProps = {
+  as: 'span',
+  options: {},
+  getBeforeInit: (instance) => instance,
+  getAfterInit: (instance) => instance
+}
 
-    /**
-     * After the component mounts (and any children are rendered), 
-     * we can safely set the strings of the instance using the rendered HTML
-     * from those optionally-defined children. Otherwise, we'll just use the strings
-     * defined via the options prop.
-     */
-    useEffect(() => {
-        if(children) {
-            options.strings = ref.current.innerHTML;
-        }
+const TypeIt: React.FunctionComponent<TypeItProps> = (props: TypeItProps) => {
+  const [shouldRenderChildren, setShouldRenderChildren] = useState<boolean>(true);
+  const ref = useRef(null);
+  const { options, as, children, getBeforeInit, getAfterInit, ...remainingProps } = props;
+  const DynamicElement = as;
+  const elementIsVoid = useMemo(() => {
+    return isVoidElement(DynamicElement);
+  }, [DynamicElement]);
 
-        setShouldRenderChildren(false);
-    }, []);
+  /**
+   * After the component mounts (and any children are rendered),
+   * we can safely set the strings of the instance using the rendered HTML
+   * from those optionally-defined children. Otherwise, we'll just use the strings
+   * defined via the options prop.
+   */
+  useEffect(() => {
+    if (children) {
+      options.strings = ref.current.innerHTML;
+    }
 
-    /**
-     * Once options (and strings) have been defined, we can hide any children we might 
-     * have rendered to make room for the TypeIt animation. On cleanup, destroy
-     * that instance. 
-     */
-    useEffect(() => {
-        if(shouldRenderChildren) {
-            return;
-        }
+    setShouldRenderChildren(false);
+  }, []);
 
-        let i = (new TypeItCore(ref.current, {
-            ...options
-        }));
+  /**
+   * Once options (and strings) have been defined, we can hide any children we might
+   * have rendered to make room for the TypeIt animation. On cleanup, destroy
+   * that instance.
+   */
+  useEffect(() => {
+    if (shouldRenderChildren) {
+      return;
+    }
 
-        i = getBeforeInit(i);
-        i.go();
-        i = getAfterInit(i);
+    let i = (new TypeItCore(ref.current, {
+      ...options
+    }));
 
-        return () => {
-            // @ts-ignore
-            i.destroy();
-        }
-    }, [shouldRenderChildren]);
+    i = getBeforeInit(i);
+    i.go();
+    i = getAfterInit(i);
 
-    return (
-        <div style={{ opacity: shouldRenderChildren ? 0 : 1}}>
-            {elementIsVoid 
-                ? <DynamicElement ref={ref} {...remainingProps} />
-                : 
-                    (
-                        <DynamicElement ref={ref} {...remainingProps}>
-                            {shouldRenderChildren && children}
-                        </DynamicElement>
-                    )
-            }
-        </div>
-    )
+    return () => {
+      // @ts-ignore
+      i.destroy();
+    }
+  }, [shouldRenderChildren]);
+
+  return (
+    <div style={{ opacity: shouldRenderChildren ? 0 : 1 }}>
+      {elementIsVoid
+        // @ts-ignore
+        ? <DynamicElement ref={ref} {...remainingProps} />
+        :
+        (
+          // @ts-ignore
+          <DynamicElement ref={ref} {...remainingProps}>
+            {shouldRenderChildren && children}
+          </DynamicElement>
+        )
+      }
+    </div>
+  )
 }
 
 TypeIt.defaultProps = defaultProps;

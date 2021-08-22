@@ -1,16 +1,17 @@
 {
   "name": "typeit-react",
-  "version": "2.0.0-rc.0",
+  "version": "2.0.0",
   "description": "React component for the most versatile JavaScript animated typing utility on the planet.",
   "homepage": "https://typeitjs.com",
-  "main": "dist/typeit-react.min.js",
-  "module": "dist/typeit-react.es.min.js",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "watch": "NODE_ENV=development rollup -c -w",
-    "build": "NODE_ENV=production rollup -c",
-    "precommit": "pretty-quick --staged",
+    "build": "microbundle -i src/index.tsx -o dist/index.js --name TypeIt --no-sourcemap --jsx React.createElement && scripts/banner",
+    "watch": "microbundle -i src/index.tsx -o dist/index.js --name TypeIt --format umd --no-sourcemap --jsx React.createElement watch",
     "prettier": "prettier --write \"**/*.{md,js}\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "files": [
     "dist/",
@@ -36,29 +37,22 @@
   "author": "Alex MacArthur <alex@macarthur.me> (https://macarthur.me)",
   "license": "GPL-3.0",
   "dependencies": {
-    "@types/react": "^17.0.18",
-    "npm-check-updates": "^11.8.3",
-    "typeit": "^8.0.0-rc.1"
+    "@types/react": "^17.0.18"
   },
   "peerDependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.14.8",
-    "@babel/core": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
-    "@babel/preset-react": "^7.14.5",
-    "@rollup/plugin-node-resolve": "^13.0.4",
-    "babel-loader": "^8.2.2",
+    "@babel/preset-typescript": "^7.15.0",
     "husky": "^7.0.1",
+    "lint-staged": "^11.1.2",
+    "microbundle": "^0.13.3",
     "prettier": "^2.3.2",
-    "pretty-quick": "^3.1.1",
-    "rollup": "^2.56.2",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript": "^1.0.1",
-    "tslib": "^2.3.1",
+    "typeit": "^8.0.0",
     "typescript": "^4.3.5"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }
