@@ -1,3 +1,7 @@
+> :warning: This project has moved! To find it, head to the TypeIt monorepo: 
+> 
+> https://github.com/alexmacarthur/typeit/tree/master/packages/typeit-react
+
 # TypeIt - React
 
 The official React component for [TypeIt](https://github.com/alexmacarthur/typeit), the most versatile JavaScript animated typing utility on the planet. You can use it to bring dynamic typewriter effects to your React applications.
